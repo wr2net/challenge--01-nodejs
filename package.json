@@ -1,19 +1,16 @@
 {
   "name": "challenge--01-nodejs",
+  "type": "module",
   "version": "1.0.0",
   "description": "Desafio referente ao módulo: Fundamentos do Node.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wr2net/challenge--01-nodejs.git"
   },
-  "keywords": [],
   "author": "Wagner Rigoli da Rosa <wagnerr2@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "serve": "node src/server.js",
-  },
-  "dependencies": {
-
+    "serve": "node src/server.js"
   },
   "bugs": {
     "url": "https://github.com/wr2net/challenge--01-nodejs/issues"
