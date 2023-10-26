@@ -13,7 +13,7 @@ export const routes = [
         .end(JSON.stringify(
           {
             "status": 200,
-            "message": "It's running"
+            "message": "It's running!"
           }
         ))
     }
@@ -36,6 +36,29 @@ export const routes = [
     path: buildRoutePath('/tasks'),
     handler: (req, res) => {
       const {title, description} = req.body
+
+      if (!title) {
+        return res
+          .writeHead(400)
+          .end(JSON.stringify(
+            {
+              "status": 400,
+              "message": "Title is required! Please, try again."
+            }
+          ));
+      }
+
+      if (!description) {
+        return res
+          .writeHead(400)
+          .end(JSON.stringify(
+            {
+              "status": 400,
+              "message": "Description is required! Please, try again."
+            }
+          ))
+      }
+
       const task = {
         id: randomUUID(),
         title,
@@ -53,13 +76,49 @@ export const routes = [
     path: buildRoutePath('/tasks/:id'),
     handler: (req, res) => {
       const { id } = req.params
-      const { title, description } = req.body
+
+      const [task] = database.select('tasks', { id })
+      console.log(task)
+      if (task === undefined) {
+        return res
+          .writeHead(404)
+          .end(JSON.stringify(
+            {
+              "status": 404,
+              "message": "Task Not Found."
+            }
+          ));
+      }
+
+      const {title, description} = req.body
+      if (!title) {
+        return res
+          .writeHead(400)
+          .end(JSON.stringify(
+            {
+              "status": 400,
+              "message": "Title is required! Please, try again."
+            }
+          ));
+      }
+
+      if (!description) {
+        return res
+          .writeHead(400)
+          .end(JSON.stringify(
+            {
+              "status": 400,
+              "message": "Description is required! Please, try again."
+            }
+          ))
+      }
+
       database.update('tasks', id, {
         title,
         description,
         updated_at: new Date(),
       })
-      return res.writeHead(201).end()
+      return res.writeHead(201).end(task)
     }
   },
   {

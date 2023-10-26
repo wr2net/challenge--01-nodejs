@@ -21,7 +21,13 @@ export class Database {
     if (search) {
       data = data.filter(row => {
         return Object.entries(search).some(([key, value]) => {
-          return row[key].toLowerCase().includes(value.toLowerCase())
+          console.log(value)
+          if (!value) {
+            console.log('xpto')
+            return false
+          }
+
+          return row[key].includes(value)
         })
       })
     }
