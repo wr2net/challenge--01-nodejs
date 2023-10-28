@@ -10,7 +10,7 @@
   "author": "Wagner Rigoli da Rosa <wagnerr2@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "serve": "node src/server.js"
+    "serve": "node --watch src/server.js"
   },
   "bugs": {
     "url": "https://github.com/wr2net/challenge--01-nodejs/issues"

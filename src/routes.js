@@ -59,16 +59,19 @@ export const routes = [
           ))
       }
 
+      const id = randomUUID();
       const task = {
-        id: randomUUID(),
+        id: id,
         title,
         description,
         completed_at: null,
         created_at: new Date(),
         updated_at: new Date(),
       }
+
       database.insert('tasks', task)
-      return res.writeHead(201).end()
+      const [Task] = database.select('tasks', { id })
+      return res.writeHead(201).end(JSON.stringify(Task))
     }
   },
   {
@@ -76,9 +79,8 @@ export const routes = [
     path: buildRoutePath('/tasks/:id'),
     handler: (req, res) => {
       const { id } = req.params
-
       const [task] = database.select('tasks', { id })
-      console.log(task)
+
       if (task === undefined) {
         return res
           .writeHead(404)
@@ -113,12 +115,21 @@ export const routes = [
           ))
       }
 
-      database.update('tasks', id, {
-        title,
-        description,
-        updated_at: new Date(),
-      })
-      return res.writeHead(201).end(task)
+      const dateToUpdate = new Date()
+      task.title = title
+      task.description = description
+      task.updated_at = dateToUpdate
+
+      if (task.updated_at !== dateToUpdate) {
+        return res.writeHead(304).end(JSON.stringify(
+          {
+            "status": 304,
+            "message": "Task Not Updated! Please, try again."
+          }
+        ))
+      } else {
+        return res.writeHead(201).end(JSON.stringify(task))
+      }
     }
   },
   {
@@ -126,13 +137,21 @@ export const routes = [
     path: buildRoutePath('/tasks/:id/complete'),
     handler: (req, res) => {
       const { id } = req.params
+      const [task] = database.select('tasks', { id })
 
-      // const [task] = database.select('tasks', id)
+      if (task === undefined) {
+        return res
+          .writeHead(404)
+          .end(JSON.stringify(
+            {
+              "status": 404,
+              "message": "Task Not Found."
+            }
+          ));
+      }
 
-      database.update('tasks', id, {
-        "completed_at": new Date(),
-      })
-      return res.writeHead(201).end()
+      task.completed_at = new Date()
+      return res.writeHead(200).end(JSON.stringify(task))
     }
   },
   {

@@ -21,9 +21,7 @@ export class Database {
     if (search) {
       data = data.filter(row => {
         return Object.entries(search).some(([key, value]) => {
-          console.log(value)
           if (!value) {
-            console.log('xpto')
             return false
           }
 
@@ -50,6 +48,14 @@ export class Database {
     const rowIndex = this.#database[table].findIndex(row => row.id === id)
     if (rowIndex > -1) {
       this.#database[table][rowIndex] = { id, ...data }
+      this.#persist()
+    }
+  }
+
+  complete(table, id, data) {
+    const rowIndex = this.#database[table].findIndex(row => row.id === id)
+    if (rowIndex > -1) {
+      this.#database[table][rowIndex] = { id, data }
       this.#persist()
     }
   }
