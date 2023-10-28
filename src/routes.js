@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto'
-import {Database} from "./database.js";
-import {buildRoutePath} from "./utils/build-route-path.js";
+import { Database } from './database.js'
+import { buildRoutePath } from './utils/build-route-path.js'
+import fs from 'node:fs/promises'
 
 const database = new Database()
 
@@ -159,8 +160,39 @@ export const routes = [
     path: buildRoutePath('/tasks/:id'),
     handler: (req, res) => {
       const { id } = req.params
+
+      const [task] = database.select('tasks', { id })
+      if (task === undefined) {
+        return res
+          .writeHead(404)
+          .end(JSON.stringify(
+            {
+              "status": 404,
+              "message": "Task Not Found."
+            }
+          ));
+      }
+
       database.delete('tasks', id)
       return res.writeHead(204).end()
+    }
+  },
+  {
+    method: 'POST',
+    path: buildRoutePath('/tasks/import'),
+    handler: (req, res) => {
+      const tasks = req.body
+      console.log(tasks)
+      // const fileData = fs.readFile(tasks, 'utf8')
+      // console.log(fileData)
+      //
+      // const task = fileData.split("\n").map((line) => {
+      //   const column = line.split(",");
+      //   console.log('title: ' + column[0])
+      //   console.log('description: ' + column[1])
+      // })
+
+      return res.writeHead(200).end()
     }
   }
 ]
