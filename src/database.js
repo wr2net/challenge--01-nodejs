@@ -51,4 +51,16 @@ export class Database {
       this.#persist()
     }
   }
+
+  async insertMany(table, data) {
+    if (Array.isArray(this.#database[table])) {
+      this.#database[table].push(data)
+    } else {
+      this.#database[table] = [data]
+    }
+
+    this.#persist();
+
+    return data;
+  }
 }

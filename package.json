@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/wr2net/challenge--01-nodejs/issues"
   },
-  "homepage": "https://github.com/wr2net/challenge--01-nodejs#readme"
+  "homepage": "https://github.com/wr2net/challenge--01-nodejs#readme",
+  "dependencies": {
+    "csv-parser": "^3.0.0",
+    "multer": "^1.4.5-lts.1"
+  }
 }

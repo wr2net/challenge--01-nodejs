@@ -1,9 +1,22 @@
 import { randomUUID } from 'node:crypto'
 import { Database } from './database.js'
 import { buildRoutePath } from './utils/build-route-path.js'
-import fs from 'node:fs/promises'
+import multer from "multer"
+import csvParser from "csv-parser";
 
 const database = new Database()
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'text/csv') {
+    cb(null, true);
+  } else {
+    cb(new Error('Only CSV files are allowed'));
+  }
+};
+
+const upload = multer({
+  fileFilter,
+});
 
 export const routes = [
   {
@@ -179,20 +192,22 @@ export const routes = [
   },
   {
     method: 'POST',
-    path: buildRoutePath('/tasks/import'),
-    handler: (req, res) => {
-      const tasks = req.body
-      console.log(tasks)
-      // const fileData = fs.readFile(tasks, 'utf8')
-      // console.log(fileData)
-      //
-      // const task = fileData.split("\n").map((line) => {
-      //   const column = line.split(",");
-      //   console.log('title: ' + column[0])
-      //   console.log('description: ' + column[1])
-      // })
+    path: buildRoutePath('/tasks/import', upload.single('file')),
+    handler: async (req, res) => {
+      const { file } = req
+      console.log(file)
 
-      return res.writeHead(200).end()
+      // const parsedData = await csvParser.parse(req.file.buffer)
+      // console.log(parsedData)
+      // await database.insertMany('tasks', parsedData)
+
+      return res.writeHead(200).end(
+        JSON.stringify(
+          {
+            "status": 200,
+            "message": "Import completed successfully."
+          }
+        ))
     }
   }
 ]
